@@ -29,6 +29,8 @@ Start a command line terminal then navigate to the project directory. From there
 
 The installation process will take a few minutes, but once it's done, navigate to the dist folder and double click the "Electron Temperature Conversion App-0.1.0.exe" file to start the Electron App. 
 
+## Format for data files
+
 The format for the text/csv file that will work is as follows:
 
 ```
@@ -39,3 +41,4 @@ Date, Temperature
 ```
 
 There are example files included in the repository example_files directory. One in Celsius (KORD-1994-01-C.txt) and one in Fahrenheit (tempdata.csv). 
+
