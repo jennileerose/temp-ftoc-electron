@@ -36,7 +36,8 @@
       "provider": "github",
       "repo": "temp-ftoc-electron",
       "owner": "jennileerose"
-    }
+    },
+    "extends": null
   },
   "browserslist": {
     "production": [

@@ -12,10 +12,16 @@ class FileInput extends React.Component {
     }
 
     render() {
-        function convertTemp(tempF) {
+        function resetForm() {
+            window.location.reload();
+        }
+        function convertFTemp(tempF) {
             return Math.round((parseInt(tempF) - 32) * 5 / 9);
         }
-        function tempsTable(rawdata) {
+        function convertCTemp(tempC) {
+            return Math.round((parseInt(tempC) * 1.8) + 32);
+        }
+        function tempsTable(rawdata, unit) {
             let htmltable = '<table>';
             let lines = rawdata.split("\n");
             lines.pop();
@@ -23,17 +29,27 @@ class FileInput extends React.Component {
             let dateLabel = labelData[0];
             let tempLabelF = labelData[1] + ' F&#176;';
             let tempLableC = 'Temperature C&#176;';
-            htmltable += "<tr><th>" + dateLabel + "</th><th>" + tempLabelF + "</th><th>" + tempLableC + "</th><tr>";
+            let conversion = 0;
+            if(unit === 'f') {
+                htmltable += "<tr><th>" + dateLabel + "</th><th>" + tempLabelF + "</th><th>" + tempLableC + "</th><tr>";
+            } else {
+                htmltable += "<tr><th>" + dateLabel + "</th><th>" + tempLableC + "</th><th>" + tempLabelF + "</th><tr>";
+            }
+            
             lines.shift();
             lines.forEach(element => {
                 let holder = element.split(',');
-                let conversion = convertTemp(holder[1]);
+                if(unit === 'f') {
+                    conversion = convertFTemp(holder[1]);
+                } else {
+                    conversion = convertCTemp(holder[1]);
+                }
                 htmltable += "<tr><td>" + holder[0] + "</td><td>" + holder[1] + "</td><td>" + conversion.toString() + "</td><tr>"
             });
             htmltable += "</table>"
             return htmltable;
         }
-        function tempsChart(rawdata) {
+        function tempsChart(rawdata, unit) {
             const chartDivF = document.getElementById('show-f-chart');
             const chartDivC = document.getElementById('show-c-chart');
             let lines = rawdata.split("\n");
@@ -45,8 +61,14 @@ class FileInput extends React.Component {
             lines.forEach(element => {
                 let holder = element.split(',');
                 dateArray.push(holder[0]);
-                tempInFArray.push(holder[1]);
-                tempInCArray.push(convertTemp(holder[1]));
+                if(unit === 'f') {
+                    tempInFArray.push(holder[1]);
+                    tempInCArray.push(convertFTemp(holder[1]));
+                }
+                else {
+                    tempInCArray.push(holder[1]);
+                    tempInFArray.push(convertCTemp(holder[1]));
+                }
             });
             const tempsInC = {
                 labels: dateArray,
@@ -110,6 +132,14 @@ class FileInput extends React.Component {
             , chartDivF);
         }
         function showFile() {
+            const unitSelector = document.querySelectorAll('input[name="unit"]');
+            let selectedUnit;
+            for (const unit of unitSelector) {
+                if (unit.checked) {
+                    selectedUnit = unit.value;
+                    break;
+                }
+            }
             let preview = document.getElementById('show-text');
             let file = document.querySelector('input[type=file]').files[0];
             let reader = new FileReader()
@@ -119,8 +149,8 @@ class FileInput extends React.Component {
             if (file.type.match(textFile)) {
             reader.onload = function (event) {
                 let data = event.target.result;
-                let table = tempsTable(data);
-                tempsChart(data);
+                let table = tempsTable(data, selectedUnit);
+                tempsChart(data, selectedUnit);
                 preview.innerHTML = table;
             }
             } else {
@@ -129,10 +159,18 @@ class FileInput extends React.Component {
             reader.readAsText(file);
         }
         return(
-            <div>
+            <div id="content">
+                <h2>Select Data Unit</h2>
+                <form>
+                    <p>
+                        <input type="radio" name="unit" value="c" /> Celsius
+                        <input type="radio" name="unit" value="f" /> Fahrenheit
+                    </p>
+                </form>
                 <p>
                     <input id="file-input" type="file" />
-                    <button onClick={showFile}>Submit</button>
+                    <button onClick={showFile}>Submit</button>&nbsp;
+                    <button onClick={resetForm}>Clear</button> 
                 </p>
                 <hr />
                 <div className="data-container">
