@@ -28,7 +28,7 @@ class App extends React.Component {
           <h1>Temperature Conversion (F&#176; to C&#176;)</h1>
         </header>
         <main>
-          <h3>Upload a temprature .csv file</h3>
+          <h2>Select a unit and upload a temprature .csv file</h2>
           <FileInput />
         </main>
         <footer>
