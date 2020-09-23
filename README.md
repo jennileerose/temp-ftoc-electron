@@ -31,9 +31,11 @@ The installation process will take a few minutes, but once it's done, navigate t
 
 The format for the text/csv file that will work is as follows:
 
-`Date, Temperature
+```
+Date, Temperature
 01/01/2020, 40
 01/02/2020, 32
-...etc`
+...etc
+```
 
 There are example files included in the repository example_files directory. One in Celsius (KORD-1994-01-C.txt) and one in Fahrenheit (tempdata.csv). 
